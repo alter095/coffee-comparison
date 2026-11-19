@@ -6,7 +6,7 @@
 
 ![PCでの比較一覧](docs/images/comparison-desktop.png)
 
-[スマホ幅の画面例](docs/images/comparison-mobile.png)もあります。画面例は架空データを使い、Chromiumで表示したものです。Android実機での動作は未検証です。
+[スマホ幅の画面例](docs/images/comparison-mobile.png)もあります。画面例は架空データを使い、Chromiumで表示したものです。Android実機では、Tailscale経由のログイン・豆登録・価格保存・再読込を手動で確認しています。
 
 - [使い方](#使い方)
 - [自分のPCで試す](#自分のpcで試す)
