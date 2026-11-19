@@ -1,0 +1,39 @@
+# Local credentials and environment
+.aws/
+.env
+.env.*
+!.env.example
+
+# Personal data, downloaded images, and backups
+data/
+uploads/
+backups/
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.sqlite3
+*.sqlite3-*
+*.log
+
+# Dependencies and generated build output
+.tools/
+node_modules/
+dist/
+build/
+coverage/
+*.test
+
+# Browser verification artifacts
+frontend/test-results/
+frontend/playwright-report/
+
+# Local releases and authentication files
+.deploy/
+secrets/
+
+# Private project notes and editor recovery files
+.private/
+/AGENTS.md
+*.swp
+*.swo

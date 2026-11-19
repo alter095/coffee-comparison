@@ -1,0 +1,30 @@
+CREATE TABLE shops (
+ id INTEGER PRIMARY KEY,
+ name TEXT NOT NULL CHECK(length(trim(name)) BETWEEN 1 AND 200),
+ shipping_yen INTEGER CHECK(shipping_yen BETWEEN 0 AND 1000000),
+ free_shipping_threshold_yen INTEGER CHECK(free_shipping_threshold_yen BETWEEN 0 AND 1000000),
+ version INTEGER NOT NULL DEFAULT 1 CHECK(version > 0),
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+) STRICT;
+CREATE TABLE beans (
+ id INTEGER PRIMARY KEY,
+ shop_id INTEGER NOT NULL REFERENCES shops(id) ON DELETE RESTRICT,
+ name TEXT NOT NULL CHECK(length(trim(name)) BETWEEN 1 AND 200),
+ product_url TEXT CHECK(length(product_url) <= 4096),
+ status TEXT NOT NULL DEFAULT 'considering' CHECK(status IN ('considering','purchased')),
+ version INTEGER NOT NULL DEFAULT 1 CHECK(version > 0),
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+) STRICT;
+CREATE INDEX beans_shop_id ON beans(shop_id);
+CREATE TABLE variants (
+ id INTEGER PRIMARY KEY,
+ bean_id INTEGER NOT NULL REFERENCES beans(id) ON DELETE CASCADE,
+ weight_g INTEGER NOT NULL CHECK(weight_g BETWEEN 1 AND 1000000),
+ price_yen INTEGER NOT NULL CHECK(price_yen BETWEEN 0 AND 1000000),
+ version INTEGER NOT NULL DEFAULT 1 CHECK(version > 0),
+ created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ UNIQUE(bean_id, weight_g)
+) STRICT;

@@ -1,0 +1,61 @@
+name: coffee-comparison
+
+x-runtime: &runtime
+  image: ${COFFEE_IMAGE:-coffee-comparison:local}
+  user: "10001:10001"
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  mem_limit: 128m
+  memswap_limit: 192m
+  cpus: 0.5
+  pids_limit: 64
+  tmpfs:
+    - /tmp:size=16m,mode=1777
+  logging:
+    driver: json-file
+    options:
+      max-size: 5m
+      max-file: "3"
+
+services:
+  coffee:
+    <<: *runtime
+    build: .
+    restart: unless-stopped
+    stop_grace_period: 10s
+    ports:
+      - "127.0.0.1:${COFFEE_PORT:-3180}:3180"
+    command:
+      - -mode=production
+      - -container
+      - -listen=0.0.0.0:3180
+      - -db=/data/coffee.sqlite
+      - -web=/app/web
+      - -origin=${COFFEE_ORIGIN:?Set COFFEE_ORIGIN in .env}
+      - -auth-file=/config/auth.sqlite
+    volumes:
+      - data:/data
+      - config:/config
+      - backups:/backups
+    healthcheck:
+      test: [CMD, coffee, healthcheck]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  setup:
+    <<: *runtime
+    profiles: [tools]
+    command: [credentials, -out, /config/auth.sqlite]
+    logging:
+      driver: none
+    volumes:
+      - config:/config
+
+volumes:
+  data:
+    name: ${COFFEE_DATA_VOLUME:-coffee-comparison_data}
+  config:
+  backups:
